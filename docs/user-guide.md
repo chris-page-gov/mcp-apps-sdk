@@ -37,6 +37,7 @@ This script performs the following in parallel:
 3. Boots the Next.js chatbot on **http://localhost:3000**.
 
 Press `Ctrl+C` in the terminal running the script to gracefully shut down all processes.
+> The helper validates `OPENAI_API_KEY` by calling `https://api.openai.com/v1/models/gpt-4o` before it starts anything. If you see a 401/403 message, fix the key or grant access instead of rerunning blindly. Set `SKIP_OPENAI_KEY_CHECK=1` when you intentionally want to skip the test (for example, when you are offline).
 
 ## Manual Workflow
 If you prefer to launch components individually:
@@ -84,6 +85,7 @@ pnpm dev
 Update `examples/chatbot/lib/mcpSetup.ts` if you need to point the chatbot at a different MCP server/port.
 
 ## Debugging Toolkit
+- **Missing key or config errors:** The chatbot now surfaces backend issues with a red banner (for example, `OPENAI_API_KEY is not configured`). Address the root cause before retrying, otherwise each attempt will hit the same guard.
 - **Direct API probe:** `pnpm debug:chatbot "<prompt>"` posts to `/api/chat` and prints the raw Server-Sent Event stream.
 - **MCP health check:** `curl -X POST http://127.0.0.1:8002/mcp -H 'content-type: application/json' -d '{"jsonrpc":"2.0","id":"1","method":"list_tools"}'` should return available tools. If it fails, verify that widget assets were built and the server is running.
 - **Quota issues:** The chatbot surfaces empty streams when OpenAI returns `AI_RetryError` (quota exceeded). Inspect the Next.js terminal output for error traces.

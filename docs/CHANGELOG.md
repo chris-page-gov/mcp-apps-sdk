@@ -8,9 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 ### Added
 - Guidance for running alternate MCP servers (Pizzaz Node & Python) in `docs/user-guide.md`.
 - Root documentation folder to consolidate onboarding material and release notes.
+- Chat UI surfaces backend misconfiguration errors (e.g. missing `OPENAI_API_KEY`) instead of leaving the user guessing.
 
 ### Changed
 - Devcontainer forwards `OPENAI_API_KEY` and critical ports to simplify example startup.
+- `scripts/run-chatbot-dev.sh` now validates the OpenAI credential before launching services to prevent fruitless retries; set `SKIP_OPENAI_KEY_CHECK=1` to bypass.
 
 ## [0.2.0] - 2024-11-05
 ### Added
