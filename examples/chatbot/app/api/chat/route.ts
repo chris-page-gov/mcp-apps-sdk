@@ -3,28 +3,74 @@ import { streamText, convertToModelMessages } from 'ai';
 import { createVercelAITools } from '@xalia/mcp-apps-sdk';
 import { getMCPClient } from '@/lib/mcpSetup';
 
+type Message = {
+  role: string;
+  content?: unknown;
+  parts?: Array<Record<string, unknown>>;
+  [key: string]: unknown;
+};
+
+function ensureParts(message: Message): Message {
+  if (Array.isArray(message.parts)) {
+    return message;
+  }
+
+  if (typeof message.content === 'string') {
+    return {
+      ...message,
+      parts: [{ type: 'text', text: message.content }],
+    };
+  }
+
+  if (Array.isArray(message.content)) {
+    const parts = message.content.map((part: any) => {
+      if (typeof part === 'string') {
+        return { type: 'text', text: part };
+      }
+
+      if (part && typeof part === 'object') {
+        if (typeof part.type === 'string') {
+          return part;
+        }
+
+        if ('text' in part && typeof part.text === 'string') {
+          return { type: 'text', text: part.text };
+        }
+      }
+
+      return { type: 'text', text: '' };
+    });
+
+    return {
+      ...message,
+      parts,
+    };
+  }
+
+  return {
+    ...message,
+    parts: [],
+  };
+}
+
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
-  // Get MCP client
   const mcpClient = await getMCPClient();
 
-  // Convert all MCP tools to Vercel AI SDK format
   const tools = await createVercelAITools(mcpClient, {
-    onWidgetFetch: async (uri, html) => {
+    onWidgetFetch: async (uri, _html) => {
       console.log(`[Chat] Widget fetched from ${uri}`);
     },
   });
 
-  // Prepare messages for the model
-  const sanitizedMessages = messages.map(({ id: _unused, ...rest }: any) => {
+  const sanitizedMessages = messages.map(({ id: _unused, ...rest }: Message) => {
     void _unused;
-    return rest;
+    return ensureParts(rest);
   });
 
   const coreMessages = convertToModelMessages(sanitizedMessages as any, { tools } as any);
 
-  // Stream the response with tool support
   const result = streamText({
     model: openai('gpt-4o'),
     messages: coreMessages,

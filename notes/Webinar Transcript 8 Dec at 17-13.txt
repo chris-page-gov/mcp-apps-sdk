@@ -1,0 +1,223 @@
+He saw we were thinking like oh this would be cool to kind of incorporate into our own AI tool. So we're developing um, sort of the productivity agent called zalia. Um, was kind of a platform for agents. Um, and we wanted to integrate this uh these apps into it.
+
+Um, but there's no, you know, the actual platform part. As like the code that he's using to display. This is not open source. Um, so we basically just developed our own package to just let people easily. Do this integration on their own end. Um, so let me just go through the readme a little bit, so Um, yeah, there's another demo video.
+
+But um basically there's a few pretty small components. Um, basically. See basically this package is going to this mcp apps widget packages or the the meat of it and then the other packages are sort of. Uh, this one's just contains sort of adaptors for transforming the, the Data type kind of of your, of your tool calls.
+
+Um, and then this uh, this one's also just sort of like boilerplate. Of Bare Bones. MCP client. Um, so I've already sort of gone through these steps. But, you know, so if you were to just Try this locally. Uh, you can do install or an example, there's or instructions here.
+
+Um, and some of them, one of the motivations for guy releasing this is, you know, Um, for example, if you wanted to test your own Uh, you don't necessarily want to be reliant on using Tech EBT. Uh, you know, you might want to just keep everything on self-contained in the local environment.
+
+So, that's maybe one of the simpler use cases where this package might come in handy. Um, so anyway, if you sort of, Go through all of these steps. Uh and start your start. The example server with the solar system. Uh, then you'll get to this point. So This is like uh this is all running on my own local machine.
+
+So, this is like, The most Bare Bones, the app can get this is actually just an example from vercel's. Uh, AI SDK package. So Um, it's kind of the simplest chat example that I just pulled directly from their examples list. So Connected to an llm and I've already connected it.
+
+I've already done the integration of using mcp apps SDK. So So from here, if I tell to use the solar system, it should understand and Let's see. It does.
+
+Uh, okay cool. Yeah. So So yeah, it worked kind of the same uh, Yeah, so so it's basically the same thing he said now it's just running completely in my local environment. Um, sorry. Yeah, that's what. Uh, so I'm gonna dive a little bit deeper into how this is what's going on in.
+
+Behind the scenes, I guess. But um, maybe now is a good time. If anyone has any questions or observations or comments, feel free. I was, I was about that. So is this essentially, your just yourself hosting, um, that at your your a, or your app? The SDK? From the app SDK.
+
+Yeah, yeah, so I'm self-hosting like everything on this page so that includes the uh, the MTP server, which is Running the app or serving the widgets. Um, it's also I'm also running this, you know, it's on localhost, I'm running the web page. Locally. And I guess the L1 is the only part that's not local.
+
+We're using like an actual llm here with figure out which one maybe, like open eight one of open AIS. But Other than that, is kind of self-contained here. Um, so yeah, it's a good environment for like testing your app. If you're developing one, for example,
+
+Um, anyone else? You just you just we have enough we have a little little enough people in here where you could just speak up if you want. Yeah. And uh, and yeah like I don't have any like time constraints really for the talk so if it's not Yeah. Feel free to interrupt anytime.
+
+So this uh, follow the Please follow the the protocol design. Uh EMC, the UI guys right? Yeah, yeah. So under the hood these, um, you know, the open AIS apps SDK is really just a special case of an mCP server. So, um, they're just a few like specifically defined tools that returns.
+
+Certain data that open AI specified. So yeah, just a special case of the mCP server, really? Okay. Yeah. Yeah. Um, okay cool. You want to show us more of Bones. Yeah, yeah. Let's uh, let's take a look at uh, some of the code. So you go into my code editor
+
+Uh, okay, so I think probably the best place to start is. Uh, like how does the actual, um, solar system server look. So, uh, yeah. What's actually going on in this this particular mCP server? That lets catch EPT understand. Oh, this is a something I should be rendering a widget for in my UI So you can kind of see here.
+
+This is oops. Uh maybe this is a good starting point to observe that this is just you know built using fast mCP uh pretty standard. Um I guess for building your python MCP servers. So yeah, that's this part. Um, this part here, the solar input. It's um, so you know, mCP servers.
+
+They expose tools, the llms make tool calls from the, um, from it. Just the format of the tool file. So to make a tool call, the airline will supply a planning name. That's kind of the only thing you need for this app. It's very simple. And then there's like an optional like Auto orbit field which is yeah, whether to keep the camera orbiting Planet.
+
+Um, Yeah, I'm not sure this actually, I haven't seen this actually do anything, but It's there and then and then there's also these descriptions so it helps out on understand, okay? What is the field actually mean? Um, Yeah. And then if you want to see uh, this is kind of uh, All the information associated with a specific widget, so there could be like Multiple of these, but Uh, let's kind of look at what?
+
+What is a widget made out of? So Um, you know, the title Template URI is kind of a label for this template. So if we had multiple templates, They would each have a different template URI. It's actually, let me just go to This is uh, the Pizzazz server is another example with multiple templates.
+
+Uh, maybe you can kind of See the pattern a bit more easily. So here you may have many different kinds of widgets. Each of them will have like a different label. To fetch the information associated. Um, Yeah, we go back. Uh, and then. Okay, invoking in both just description text.
+
+Uh, and then this is another important part which is the HTML. So, To run. You know, what's actually containing to run a widget is just HTML. So your child gbt it has this Frame, it's an iframe And this HTML is basically what's going to be displayed in the iframe there.
+
+Um, And then this is something that's, you know, Uh, sort of thing, this is like a react component. So it's built in a different part of the code, but it just loads the HTML associate compiled HTML associated with the react components. Uh, See yeah, sorry. Is this the one of the examples from A.G or openai?
+
+That they they. So you have the good. I'm sorry. I've never used the eight to ask or the athlete SDK yet. Oh, okay. Yeah, okay. It's my first time seeing it but so just keep going. Yeah. Yeah, this is a example. So it's sort of I guess the standard way that The app should be built, I suppose.
+
+Yeah. And yeah, this is supposed to be like it is like pretty minimal. Um, in terms of nav you can build um, See, what else is? Got this data class. See that's not so interesting. Oh yeah, there's This is important. So this is, um, Basically, as part of the Oh, is the repo difference?
+
+Uh, yes. Um, so yeah, we did sub module, the um, open our open apps SDK example. So, Yeah, if you look in the repo, I think it appears as a submodule inside. Uh, examples. Um, Gently. You can follow that link and see the code there. Um, Yeah. So anyway, back to Get back to this, um, So, you know, The uh, responses that um, As open AI sent back, you know, just in general with Gpt includes some extra Fields that can go along with the text, the message.
+
+So, One of them is metadata called meta and can kind of include sort of arbitrary. Data in it. That's associated with the tool call. And this is, um, This is an example of, you know what, the what we'd include as part of the meta field in our tool called resolve.
+
+When we Call this, you know, solar system app. So this is what the part of what the server is returning to the, to the LLM or chat GPT, so it includes. Um, so we're given one of the widgets. Well, we only have one widget, so this is always going to be the same.
+
+This is always going to be a fixed, uh, This solar widget basically. Um, but anyway, it includes the template URI, you have a label. This flavour text. Um, Yeah, and some other annotations. Um, you have the template Uris the sort of the important part to, um, you know, fetch the HTML a bit later.
+
+Um, Let's see, and then if we go down to line 238, Um yeah we can see like okay what happens at when you do a tool? Call request. Um, so okay. There's some arguments. Uh, Yeah, make sure the arguments actually follow the solar input that we saw before. Um, Let's see.
+
+And then see where's the interesting part? This is just normalising you know, if the planet name is like capitalised or something Um, To so, yeah, here's one uh, Path. So if the planet is sort of wrong, That on calls it for like Pluto or something. It's technically not a planet.
+
+It'll go to this path and just say, okay our tool call result just says, um, it's unknown Planet. Otherwise, okay, if we did recognise the planet, Then we actually construct this meta field. So Um, here we Just follow. Uh, so widget resource is It's like this. Um, so part of this is that we're going to Like I'll explain a bit later but I just focused on this meta field, uh, for now so we can just see.
+
+Like, okay, there's A template URI is the other fields. Um, Description. Okay, so Meta description. And then there's also structured content and these things all kind of go into the result that appears over here.
+
+Yeah. So that's roughly the, you know, that's how the tool call result is kind of constructed and The structured content and meta fields are. The contents are sort of these sort of Define how the App works and is rendered. Um, so yeah, the flow I guess that was like Um, we add this mCP server to 10TT the llm.
+
+Will get a list of tools that are available in the MTE server. Uh, as usual. Um after a prompt you know the llm will decide to use say one of these Is the one tool in the solar system at Um, sends a request to the server that goes ends up going through this path of call tool requests.
+
+And then the server will respond using Uh, with a message including, you know, this structured content and meta. Uh, The Meta is going to be what contains the widget HTML. Things over here. Uh, and And then, you know, chat GPT will use that data to display the widget to the user.
+
+Um, Yes, I think that. See if there's the global. But that's not even here. But yeah, that's sort of how it works at a high level. Um, I guess. Yeah. That's just how this solar system at works, basically. Just want to check with this model does. Um, yeah, that's actually yeah, it's pretty much most of the already.
+
+Um, it's 300 lines of code. And the rest I think is Largely boilerplate. But yeah, I think these are kind of useful to see as examples of What the open AI apps SDK format, kind of looks like Um, So yeah, any questions or comments about? This this example app, Or how it, uh, how it works.
+
+So, the interaction between the sandbox iframe and the main cat is it govern in Discord or Um, so yeah, there's um So the the sort of some stuff under the hood. So, um, Is like this openly eye windows window. Globals object that sort of bridges like the state of the um, the app in the iframe and then It lets you sort of modify that state from, It looks like Chad GPT for example, modify the state.
+
+If it wants to the at And also lets the user like change things. So, like simple, even simple things like whether you want a full screen or not, um, there's this sort of built-in set of globals that And adjust the state. Um, Yeah, but I don't think you can really see that here, that sort of, um, Part of the, I think that's on the other side like on.
+
+The platform side things. Yeah. Uh, okay. And, um, this uh, kind of reminds exactly where the With HTML run. I think. Yeah, so there's there's some react components to this. So um, That's, you know, it's going to. Oh, right here. It's in load. Widget HTML. This is going to retrieve.
+
+The actual HTML that's rendered from the Uh, the assets. So that's in this Source directory. And we did kind of look at what these These things look like. So this is the uh, this is what's uh, inside the widget. Um, saying this one might have The global. Oh yeah.
+
+So here's You can kind of see the global state that I mentioned. So, um, so this widget includes this use effect, which Is basically sets the global state or like listens for changes in global state and can set it. Um, Yeah I think the rest is maybe not super interesting like kind of specific to this example but um but yeah I guess this is the Key piece that makes the widget kind of work with.
+
+This open AI SDK format. Um, I don't think there's anything else. That was super interesting. This is also the mechanism for sending back and forth data between the frame and the main frame, right? Exactly. So yeah. This window oai thing is um, yeah, the bridge there. But cuz yeah, you're right that it um as you said it's like a Sandbox iframe so it kind of Blocks a lot of communication.
+
+If otherwise. So essentially, but what you've got created is is the bridge between that that we you can Um, So where does so, where does ag2 come into play? Yeah. Um, Oh yeah. So I mean it's basically um, you can Uh, if you wanted to, you could like incorporate our package to um, just support these apps kind of in Uh, very simple way.
+
+So Yeah, maybe it'll be clear when I go through the uh, the example of If you recall the second map that I showed that was super Bare Bones and built off of your cells aisdk, Show you how we integrate. You know how that's implemented I guess. Um, And uses our package so you can kind of use our package.
+
+I think inside ag2. Um, so let me go through that next. You mentioned 82 as a MCB client. Or is our mCP SDK MCB app plastic, in this case, I'm more thinking of like how Like in it. All right. So I I have I'm using a 82 for to create Uh, automations, you know?
+
+And, Is it if I had access to this? Are you saying that I could use this information to create automations? Separate from the app, maybe. So basically, Uh, Libraries building a framework agnostic way. Uh, so you can use 82, you can use Versailles AISDK, you can use in long chain, for example, Um, so this is a particularly useful when people who are using ag2, also are building a interface So then Z can just like, uh, import or like Uh, install like npm install this Library.
+
+So now your app. Uh, well support mcpsd mcp-based app quiz UI. And this UI will be integrated with your like a front-end. So this is uh, for particular use for for people who are using ag2. Just to do a back-end ad also building some agent with the interface. Makes sense.
+
+Yeah, so so I see three components here, right? For an ad client, the ig2, as a Identic framework. Yeah automation. And, Um, Mcd caps, SDKs. Um, UI, right, widget, right and then a client grab The client wraps this into a chat interface. Yeah, right. Okay. Okay. Yeah, yeah, exactly.
+
+Uh yeah, thanks for the uh application Gmail. Um, Okay, so You know, it's uh, go in. Um, so this is This is the example app, which is um, sort of the, the second demo that I showed where we had the Bare Bones, um, chat interface, and then we had a widget show up in it.
+
+This is the code behind that page. Um, so you can see, it's pretty short, it's only, it's less than 100 lines. And there's three main well two main pieces in the Imports to point out. So Uh, this use chat import from versell's AISDK. This thing, just Give the chat in your face abstraction, so it it kind of handles like the message State Management um like the streaming responses, Tool calls and message history, and just manages all that stuff for us, so it's pretty convenient.
+
+And then it gets used here to just keep track of Um, the the messages and the conversation so far. Um, and then This one line five, this assistant atom, that is, uh, sort of one of the key pieces of our package that useful. So basically gives you a very simple way to render the widget.
+
+Yeah. So you so that. So you your app receives the HTML corresponding to widget this thing. Lets you just render the HTML in the same sandbox way. In. Just conveniently so you can see it. It's instantiated over here. You know, this is kind of it. It takes in the wicked HTML, which comes from the result of the tool call also takes in Any possible structured content.
+
+And Other tool response metadata that could come with it. And that's actually kind of it. So this is Um sort of in this at least in a simple case, all you need to do to use our package and have the widgets show up. On your internet interface. Um, but yeah, we can let's look at uh how this what this is actually doing.
+
+Um, so go through this assistant app, embed code Um, So, let's see the uh, to go through this. Um,
+
+Uh, okay, so this is basically a react component that is rendering the mCP widgets and the secure sandbox iframe. So maybe we start here. So the way we are going to render it, um we're actually going to store the widget and then produce a sort of static URL for the widget, so fucking uh, All right.
+
+Oh yeah.
+
+Oh my gosh.
+
+I don't even know how to how to react to that. Did you turn on the, uh, I'm gonna say the the bidding control. Yeah. I think I think because I share, I should I shared it like across our socials and I guess somebody must have just like, Somebody with no time on their hands decided to just Come in here and do that.
+
+You know what I mean? Yeah, wait. I know, which is this, like, why, why are you gonna do that? It doesn't make sense. But now, now it makes me be like, oh, man. We gotta. What do we gotta put up? Password on this now. But I apologise Vincent seriously, that action.
+
+Yeah, you definitely. Well I've heard of you know, steam bombers and stuff. Yeah like yeah.
+
+Well, it wasn't that. So the thing is, is that you didn't actually actually have to register. Um, Now, it's just for the event itself. But not for this exact. Meeting. So, Next time, maybe. I think I'm gonna have to maybe we'll just We're gonna have to put some blocker around it that which stinks because I think you can just uh, turn on the meeting control and Some admin has to administer.
+
+The participants I think. Yeah, I mean, well, I, I, I added them. I just added thinking it was just like a normal person. You know what I mean? Yeah. So I just, I their name was. It was like Dr. Joe or something like that. Yeah, yeah. This is John.
+
+So I was like, all right. I mean I'll add them but now I got it. Yeah, yeah, yeah, yeah. That. But yeah. Yeah. Yeah, right. Thanks. I I, I take it. I know. Oh, yeah. Rogue. I might have done that. Yeah. Yeah, well, if you want to keep going?
+
+Yeah, yeah, I'm here. So Yeah yeah, I guess we can uh finish up right now, worried about anybody who's going to come in here. But if you want to keep going, that's fine. Yeah. Uh, so yeah, let me pull back up the code Uh, okay. Yeah. So where were we?
+
+Um So, All right, so we had, um, Let me just step back one step. So we had our example of super simple example page. Has this assistant app embed, which is uh, the sort of key part of our mCP. Apps SDK package that That you'd use. And uh, what's actually in here?
+
+Um, so Um, So basically, the way this works is uh Kate has a this iframe ref uh a frame source and we're simply going to set the iframe source to the to point to the widget HTML. So basically that's what's happening, uh, in this piece in this effect, uh, which is persist widget.
+
+It will, uh, what it does is it'll store the widget. So this is actually necessary because you can't can't really directly use the HTML and the iframe, but you can't really Directly render it from the iframe. You have to have a URL and point guide right into it. So this store widget function, basically it'll end up uh, You know, basically end up do uh, calling this piece over here and this is just an end point.
+
+That will Uh, basically make a URL where we're Rendering this this HTML. Um, for the iframe to so that we can set that as the iframe source. Um, so I'll maybe talk a little bit about that later. Um, Uh, yeah. So anyway, uh, and then over here. Okay, we got some URL basically from this store, widget function.
+
+And then we set the iframe source to be that uh, Um, so yeah, pretty pretty, uh, Yeah, at its core, it's like pretty simple. Uh, just manipulating the iframe but, um, I guess like there's a little bit of Is some tricky parts to that we had to figure out while implementing this.
+
+Um, So, Let's see if, uh, oh In fact, and go over to 305. Um and then just look at okay, what does this component assistant math? Embed actually return in the end. Um it returns this Element. So, um, See. Yeah, there's some display mode stuff. About whether it's full screen or not.
+
+But but basically the you know, key The key piece here, is this iframe over here, which Uh, right just points to the iframe reference and you know, sets the turns on the sandbox Thing. You know, set some of the style. Um, so this is what the component is returning in the end.
+
+Uh yeah and then I'll talk a bit more about how the widget is actually getting stored because you don't actually store the the exact HTML you have to sort of inject. So, I have to wrap it with Some stuff basically to set up the the open AI globals. With openai.window globals.
+
+So, uh, Went to. Um, so yeah, that's this. It's this widget cache. Sets that up. I remember. Oh we know um, Oh yeah, this is So basically, uh, when we When we render the widget HTML, let me Remember where this is called? You think I should let this person in?
+
+Yes, it's a risk. Uh, who wants?
+
+Uh, so anyway like when we uh store the widget basically, we'll So, what we actually render the widget of the widget HTML is It's going to look like this. So, uh, So this is a big chunk of HTML that kind of racks around the widget HTML. So, And is this one here guys, is this part of your SDK?
+
+Yeah. Yeah. So um, so basically we have um, This is this goes in the server of our mcpx widget so and there's servers like what store is storing all those? Is what the URLs are kind of pointing to Um and yeah you can kind of um like you can Implement your own as well.
+
+Like you don't have to. Uh, use this. This is more of like a simple example of how you could do it. Um, But yummy. Oh, yeah. So anyway, here's the wish. Here's the widget HTML. Let's return from the tool call and to actually wrapped with all this other stuff.
+
+So I guess it's really just a script that um, runs to inject all the globals. So, this is what's actually going to be rendered in the The in the front end. Um so yeah, if we look a little bit more closely at, you know these you know all the window dot stuff here you can kind of see Um, Yeah, what's going on?
+
+There's uh, I think there's Go to bank listeners and ways to sort of You communicate between the host and the The mcte server using these uh, these window globals and so on. Um, Yeah, I think this implementation could probably be simplified a bit um, but Uh, but yeah, it's working at Um, Yeah, so this thing, uh, Let me see if I can find the widget cache.
+
+Yeah, so this is, um, Yes, it's our in our lid part. You know, we just provided a simple way to, you know cache the widgets on the server side as well. Just so you don't have to keep re- Rendering it over there. Um, Let's see. Yeah, I think. Yes.
+
+Yeah. Does anyone have any questions about this? These pieces of the code or Yeah. Um, So where so where do you think? Like, uh, An ag2 integration. Would come in. Like, would you? So, um,
+
+Where like where could you see? And then like I say I'm like how so I so I have my app this would the integration point for ag2 where would that come into your widget? Like, where would I? I would Front end piece, the AI SDK react keys. Yeah, yeah.
+
+So yeah, this would all be in your front-end component. Yeah, it'll belong to your front end. So, you know, maybe in instead of using like your cell's AI SDK, you might use your own if you have. Own framework for that. Um, and then you can just sort of drop in this assistant app embed component in.
+
+Um, As well as like, uh, Yeah, you need a little bit of Yeah, eating a little bit of like back end, server communication. So you need some kind of API route to To fetch like the widgets or store them in your web server backend. Yeah, I've only ever used a fast API.
+
+Uh, websockets myself, but that's just personal. Yeah. Yeah. Um, but yeah. Like, um, Yeah, it should be pretty flexible. So yeah, I'd be interested to see if it This is something that you can drop into some, you know, just anywhere in your front end, where you might be using apps, or you need to display that to the user.
+
+I think and and where any of those components would be useful. So, as you do just show this as it calls another tool, right? Um yeah, yeah exactly. So um, so if they if uh, your agents are able to use NCT tools already Should kind of know how to call these tools as well and it's just a matter.
+
+So it'll all, you know, your agent will act kind of the same as before, it doesn't need to like really know anything about the Open AI apps, SDK format or anything, but your front end needs to know about it, so it's basically your front end will like know when to render this iframe, the widget in it.
+
+Yeah, your llm is not directly controlling that. Yeah, um, but yeah, and I guess, you know, since we have a few minutes, I just want to show This, uh, You know, we use this in our own product as well. Uh, zalia? So let me just show you what that looks like.
+
+Um,
+
+I need. Need to spin down my, uh,
+
+Okay, let me share.
+
+Okay, uh, I think my computer's a little Fit resource starved. So Going a bit slow to.
+
+Okay. Yeah, I think I'm a bit low on Ram or something.
+
+Yeah, I think you stalled out maybe There you go. Yeah. I think I mean okay. Well Oh, let me get my other. Brass, I'm gonna see if I can close my other. Browser, may be up. Memory. Oh, there we go. Okay. Finally Um, so yeah. Anyway, so we used our own mcp, apps SDK.
+
+So here's just the example chat of uh, okay. Yeah, how we used it? So, yeah, you know, that it's exactly the same actually. Yeah. It's the same, uh, mCP server instance that's running in each of these examples. Like, It's like the exact same one as Chad GPT is connected to here.
+
+Uh, we're using the same thing here and Yeah, this is what it looks like. Um, Just dropped it in. Um, Kind of plug-in place. Um, you know, just wanted to plug that. Um, Yeah. So uh, so anyway, yeah, I guess that's the end of the hour. So but yeah, if there are any questions or anything happy to still take them uh other than other than that crazy.
+
+Interaction. I apologise for that we're gonna have to figure out how to fix that unfortunately. But um and I apologise to you guys and everybody in here, It's not fair, but in no worries, I'm personally like offended myself because it's like, oh my gosh, Steve. Anyway um I'm glad you guys shared this because um, it's good.
+
+A lot of people are going to need a front end integration for their ag2. Locations. So This is good for sure. Anybody have any other questions?
+
+Okay, I have one, guys. Unfair for everybody else, but I see silence here. So, um, Um, The mcp apps is now part of the mCP protocol is called external app. Right. Maybe I just put a link in the chat for everybody here. So how does it? Go in line with the mCP app SDK here.
+
+Um,
+
+New. Are these new? I think it's just 10 years ago or something. Oh, Yeah, actually, I haven't seen uh, the external apps before. Um, I understand yeah, might be Maybe if you can show it on the screen then oh yeah, I guess. Yeah. Now, let me share that.
+
+That is very active, the Yeah, so this is this like, um, Different from. Oh, okay. So I wonder if this is a competing. Standard. Versus like open AIS abscess DK. The joy forced. With the opening the eye. Okay? Acting yeah, to develop this into the official LCP protocol. Yeah.
+
+So yes, it'll caught in my yeah. I asked me the protocol more codified. In a sense. Yeah, I guess maybe. So yeah ads as well, right? Um. I'm sure that it's going to be a lot of overlap between the omcp app SDK and this one. Yeah, maybe You have to take.
+
+Closer look. Yeah. It's uh, yeah, it's interesting to know. Yeah, it's very good to have to see how they're doing it.
+
+Oh, okay. Yeah, it might be. Yeah, pretty similar to Is this basic host?
+
+Yeah. Yeah thanks for um cleaning that out. Um yeah it does. Yeah it seems to overlap a decent amount.
+
+Before this exists and Um, yeah, I I think I, I look at the code, I think, uh, It seems that. They have two if separate part, for example, uh, the ftk part and the UI part. Um, so you can see that part um, Eh, I'm not sure this is all in one.
+
+Yeah, we probably have a take a deeper look. And uh, yeah, we can chat more in the ag2 Discord, I guess.
+
+All right, guys. All right. Well, that was a memorable. That was a crazy way to start the day. So yeah, the rest of the day goes better. Yeah. All right. But that was really good talk. I appreciate you guys coming out. Yeah, yeah. I appreciate uh the opportunity and yeah, thanks for listening.
+
+Yeah. Yeah. Thanks for watching. It's not, you're really not your fault. So don't be too worried about it, I know. Yeah, yeah. Yeah yeah, bye, thanks. Bye. Yeah, bye.
