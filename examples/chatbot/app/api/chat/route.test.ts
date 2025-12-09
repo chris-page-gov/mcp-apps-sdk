@@ -97,15 +97,18 @@ describe('POST /api/chat', () => {
     expect(openaiMock).toHaveBeenCalledWith('gpt-4o');
     expect(convertToModelMessagesMock).toHaveBeenCalledTimes(1);
 
-    const convertArgs = convertToModelMessagesMock.mock.calls[0][0];
+    const convertCall = convertToModelMessagesMock.mock.calls[0] as any[] | undefined;
+    const convertArgs = (convertCall?.[0] ?? []) as any[];
     expect(convertArgs).toHaveLength(1);
-    expect(convertArgs[0]).toMatchObject({
+
+    const firstArg = convertArgs[0]!;
+    expect(firstArg).toMatchObject({
       role: 'user',
       parts: [
         { type: 'text', text: 'Hello from test' },
       ],
     });
-    expect(convertArgs[0]).not.toHaveProperty('id');
+    expect(firstArg).not.toHaveProperty('id');
 
     expect(streamTextMock).toHaveBeenCalledWith({
       model: 'mock-model',
