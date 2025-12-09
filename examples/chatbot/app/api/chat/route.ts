@@ -56,6 +56,16 @@ function ensureParts(message: Message): Message {
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
+  if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY.trim().length === 0) {
+    return new Response(
+      JSON.stringify({ error: 'OPENAI_API_KEY is not configured. Set it before calling this endpoint.' }),
+      {
+        status: 500,
+        headers: { 'content-type': 'application/json' },
+      }
+    );
+  }
+
   const mcpClient = await getMCPClient();
 
   const tools = await createVercelAITools(mcpClient, {

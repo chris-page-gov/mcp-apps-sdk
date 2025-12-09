@@ -1,4 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+const originalApiKey = vi.hoisted(() => process.env.OPENAI_API_KEY);
 
 const {
   openaiMock,
@@ -44,9 +46,18 @@ vi.mock('@/lib/mcpSetup', () => ({
 
 import { POST } from './route';
 
+afterEach(() => {
+  if (originalApiKey === undefined) {
+    delete process.env.OPENAI_API_KEY;
+  } else {
+    process.env.OPENAI_API_KEY = originalApiKey;
+  }
+});
+
 describe('POST /api/chat', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    process.env.OPENAI_API_KEY = 'test-key';
     toUIMessageStreamResponseMock.mockReturnValue(streamResponse);
     streamTextMock.mockReturnValue({
       toUIMessageStreamResponse: toUIMessageStreamResponseMock,
@@ -104,5 +115,26 @@ describe('POST /api/chat', () => {
 
     expect(toUIMessageStreamResponseMock).toHaveBeenCalledTimes(1);
     expect(response).toBe(streamResponse);
+  });
+
+  it('returns 500 when OPENAI_API_KEY is missing', async () => {
+    const request = new Request('http://localtest.me/api/chat', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({ messages: [] }),
+    });
+
+    delete process.env.OPENAI_API_KEY;
+
+    const response = await POST(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(500);
+    expect(body).toEqual({
+      error: 'OPENAI_API_KEY is not configured. Set it before calling this endpoint.',
+    });
+    expect(openaiMock).not.toHaveBeenCalled();
   });
 });
