@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 - Guidance for running alternate MCP servers (Pizzaz Node & Python) in `docs/user-guide.md`.
 - Root documentation folder to consolidate onboarding material and release notes.
 - Chat UI surfaces backend misconfiguration errors (e.g. missing `OPENAI_API_KEY`) instead of leaving the user guessing.
+- Top-level `AGENTS.md` summarizing guardrails for all automation workflows and flagging the read-only submodule.
 
 ### Changed
 - Devcontainer forwards `OPENAI_API_KEY` and critical ports to simplify example startup.
